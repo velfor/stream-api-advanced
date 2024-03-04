@@ -1,6 +1,5 @@
 package com.solbeg;
 
-
 import com.solbeg.exception.EntityNotFoundException;
 import com.solbeg.exception.ExerciseNotCompletedException;
 import com.solbeg.model.User;
@@ -39,7 +38,6 @@ public class Main {
                 .collect(Collectors.toList());
     }
 
-
     /**
      * Returns a Map that stores users grouped by its email domain. A map key is String which is an
      * email domain like "gmail.com". And the value is a List<User> that contains all users with such email domain.
@@ -50,7 +48,6 @@ public class Main {
         return users.stream()
                 .collect(Collectors.groupingBy(user -> user.getEmail().split("@")[1]));
     }
-
 
     /**
      * @return total balance of all users
@@ -109,7 +106,6 @@ public class Main {
         return users.stream()
                 .collect(Collectors.toMap(user-> user.getId(), user -> user));
     }
-
 
     /**
      * Returns a {@link Map} where key is {@link User#getLastName()} and values is a {@link Set} that contains first names
