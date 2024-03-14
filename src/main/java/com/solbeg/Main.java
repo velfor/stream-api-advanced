@@ -21,9 +21,7 @@ public class Main {
      */
 
     public Optional<User> findRichestUser() {
-        return users.stream().max((user1, user2) ->{
-                    return user1.getBalance().compareTo(user2.getBalance());
-                });
+        return users.stream().max(Comparator.comparing(User::getBalance));
     }
 
     /**
@@ -35,7 +33,7 @@ public class Main {
     public List<User> findUsersByBirthdayMonth(Month birthdayMonth) {
         return users.stream()
                 .filter(user -> user.getBirthDay().getMonth().equals(birthdayMonth))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -53,11 +51,9 @@ public class Main {
      * @return total balance of all users
      */
     public BigDecimal calculateTotalBalance() {
-        return users.stream().reduce(
-                new BigDecimal(0),
-                (sum, user)-> { return user.getBalance().add(sum);},
-                (x,y) -> x.add(y)
-        );
+        return users.stream()
+                .map(User::getBalance)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     /**
@@ -66,7 +62,7 @@ public class Main {
     public List<User> sortByFirstAndLastNames() {
         return users.stream()
                 .sorted(Comparator.comparing(User::getFirstName).thenComparing(User::getLastName))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -86,15 +82,11 @@ public class Main {
      * @return user balance
      */
     public BigDecimal getBalanceByEmail(String email) {
-        Optional<User> user = users.stream()
-                .filter(user1 -> user1.getEmail().equals(email))
-                .findFirst();
-
-        if (user.isPresent()) {
-            return user.get().getBalance();
-        } else {
-            throw new EntityNotFoundException("Cannot find User by email=" + email);
-        }
+        return users.stream()
+                .filter(user -> user.getEmail().equals(email))
+                .findFirst()
+                .map(User::getBalance)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find User by email=" + email));
     }
 
     /**
@@ -104,7 +96,7 @@ public class Main {
      */
     public Map<Long, User> collectUsersById() {
         return users.stream()
-                .collect(Collectors.toMap(user-> user.getId(), user -> user));
+                .collect(Collectors.toMap(User::getId, user -> user));
     }
 
     /**
